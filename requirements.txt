@@ -1,0 +1,6 @@
+flask==2.0.3
+Faker==8.14.0
+requests==2.26.0
+python-dotenv==0.10.3
+mysql-connector-python==8.0.28
+aws-credentials==1.0.0
