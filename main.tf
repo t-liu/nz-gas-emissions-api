@@ -12,10 +12,10 @@ terraform {
   required_version = ">= 1.1.0"
 
   cloud {
-    organization = var.tf_cloud_org_name
+    organization = "t-liu-production"
 
     workspaces {
-      name = var.tf_cloud_ws_name
+      name = "nz-gas-emissions-api"
     }
   }
 }
