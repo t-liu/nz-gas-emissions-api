@@ -2,6 +2,8 @@
 
 Work in progress.  This project is to illustrate an application programming interface (API) developed using Python + the Flask micro web framework.  The API fetches data from a MySQL database that is hosted on AWS RDS.  Additionally, this API can be containerized with the associated Dockerfile in the project repo.
 
+## Run in Python
+
 Create a virtualenv: `python3 -m venv venv`
 
 Activate virtual env: `. ./venv/bin/activate`
@@ -20,22 +22,49 @@ pass =
 database = 
 ```
 
+## Containerize the API
+
 To run as a Docker container, execute the following commands on the project root directory:
 ```
 docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" -f Dockerfile -t some-image-name .
-docker run -d -p 5000:5000 some-image-name --name some-container-name
+docker run -d -p 5000:5000 some-image-name
 ```
-Service can be accessed at http://my.web.host.com:5000
+When running locally, service can be accessed at http://localhost:5000/emissions
 
-### Technologies/Languages
+## Terraform Setup
+
+Initiate, plan, and apply the Terraform workspace:
+
+```sh
+terraform init
+terraform plan -var-file="./tf/vars/secrets.tfvars" -var-file="./tf/vars/environment.tfvars"
+terraform apply -var-file="./tf/vars/secrets.tfvars" -var-file="./tf/vars/environment.tfvars"
+```
+To destroy the Terraform workspace:
+
+```sh
+terraform plan -destroy -var-file="./tf/vars/secrets.tfvars" -var-file="./tf/vars/environment.tfvars"
+terraform apply -var-file="./tf/vars/secrets.tfvars" -var-file="./tf/vars/environment.tfvars"
+```
+
+## Technologies/Languages
 * Application
     * Python
     * Flask
     * Docker
 * AWS
-    * ECS
+    * VPC
     * RDS 
+    * ALB
+    * SSM
+    * Route 53
+    * ECS/Fargate
     * API Gateway
 * CI/CD
     * GitHub Actions
     * Terraform
+
+## Items to still work on
+* Pagination for API
+* DB connection pooling
+* Maybe a circuit breaker
