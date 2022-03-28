@@ -12,6 +12,8 @@
 .terraform
 **/.idea
 **/*.iml
+**/*.tfvars
+tf/*
 
 **/.build-harness
 **/build-harness
