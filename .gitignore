@@ -152,6 +152,7 @@ config.ini
 **/.terragrunt-cache/*
 *.tfstate
 *.tfstate.*
+.terraform.lock.hcl
 
 # tf module directory
 .terraform

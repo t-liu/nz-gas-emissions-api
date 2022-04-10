@@ -1,8 +1,8 @@
-### WIP: New Zealand Gas Emissions API
+## WIP: New Zealand Gas Emissions API
 
-Work in progress.  This project is to illustrate an application programming interface (API) developed using Python + the Flask micro web framework.  The API fetches data from a MySQL database that is hosted on AWS RDS.  Additionally, this API can be containerized with the associated Dockerfile in the project repo.
+Work in progress.  This project is to illustrate an application programming interface (API) developed using Python + the Flask micro web framework.  The API fetches data from a MySQL database that is hosted on AWS RDS.  Additionally, this API can be containerized with the associated Dockerfile in the project repo.  Entire infrastructure, including VPC components + load balancer + DNS routing, can be deployed via Hashicorp Terraform.
 
-## Run in Python
+### Run in Python
 
 Create a virtualenv: `python3 -m venv venv`
 
@@ -22,7 +22,7 @@ pass =
 database = 
 ```
 
-## Containerize the API
+### Containerize the API
 
 To run as a Docker container, execute the following commands on the project root directory:
 ```
@@ -31,7 +31,7 @@ docker run -d -p 5000:5000 some-image-name
 ```
 When running locally, service can be accessed at http://localhost:5000/emissions
 
-## Terraform Setup
+### Terraform Setup
 
 Initiate, plan, and apply the Terraform workspace:
 
@@ -47,7 +47,7 @@ terraform plan -destroy -var-file="./tf/vars/secrets.tfvars" -var-file="./tf/var
 terraform apply -var-file="./tf/vars/secrets.tfvars" -var-file="./tf/vars/environment.tfvars"
 ```
 
-## Technologies/Languages
+### Technologies/Languages
 * Application
     * Python
     * Flask
@@ -57,14 +57,14 @@ terraform apply -var-file="./tf/vars/secrets.tfvars" -var-file="./tf/vars/enviro
     * RDS 
     * ALB
     * SSM
+    * ECS
     * Route 53
-    * ECS/Fargate
     * API Gateway
 * CI/CD
     * GitHub Actions
     * Terraform
 
-## Items to still work on
+### Items to still work on
 * Pagination for API
 * DB connection pooling
 * Maybe a circuit breaker

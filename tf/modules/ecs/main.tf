@@ -6,7 +6,7 @@ data "aws_iam_policy_document" "ecs_task" {
 
     principals {
       type        = "Service"
-      identifiers = ["ec2.amazonaws.com", "ecs-tasks.amazonaws.com"]
+      identifiers = ["ec2.amazonaws.com", "ecs-tasks.amazonaws.com", "ecs.amazonaws.com"]
     }
   }
 }
@@ -50,31 +50,7 @@ resource "aws_iam_policy" "dynamodb" {
 }
 EOF
 }
-/*
-resource "aws_iam_policy" "secrets" {
-  name        = "${var.name}-task-policy-secrets"
-  description = "Policy that allows access to the secrets we created"
 
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "AccessSecrets",
-            "Effect": "Allow",
-            "Action": [
-              "secretsmanager:GetSecretValue",
-              "ssm:GetParametersByPath",
-              "ssm:GetParameters",
-              "ssm:GetParameter",
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
-}
-*/
 
 resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
@@ -85,13 +61,6 @@ resource "aws_iam_role_policy_attachment" "ecs-task-role-policy-attachment" {
   role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.dynamodb.arn
 }
-
-/*
-resource "aws_iam_role_policy_attachment" "ecs-task-role-policy-attachment-for-secrets" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = aws_iam_policy.secrets.arn
-}
-*/
 
 resource "aws_cloudwatch_log_group" "main" {
   name = "/ecs/${var.name}-task-${var.environment}"
@@ -114,7 +83,6 @@ resource "aws_ecs_task_definition" "main" {
     name        = "${var.name}-container-${var.environment}"
     image       = "${var.container_image}:latest"
     essential   = true
-    environment = var.container_environment
     portMappings = [{
       protocol      = "tcp"
       containerPort = var.container_port
@@ -159,7 +127,7 @@ resource "aws_ecs_service" "main" {
   network_configuration {
     security_groups  = var.ecs_service_security_groups
     subnets          = var.subnets.*.id
-    assign_public_ip = false
+    assign_public_ip = true
   }
 
   load_balancer {
