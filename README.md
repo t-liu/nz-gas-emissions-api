@@ -4,13 +4,13 @@ Work in progress.  This project is to illustrate an application programming inte
 
 ### Run in Python
 
-Create a virtualenv: `python3 -m venv venv`
+Create a virtualenv: `python -m venv venv`
 
 Activate virtual env: `. ./venv/bin/activate`
 
 Install: `pip install -r requirements.txt`
 
-Run the application:  `python3 api.py`
+Run the application: `python run.py`
 
 Will need to include a config.ini file with the following:
 ```
@@ -26,7 +26,7 @@ database =
 
 To run as a Docker container, execute the following commands on the project root directory:
 ```
-docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" -f Dockerfile -t some-image-name .
+docker build -f Dockerfile -t some-image-name .
 docker run -d -p 5000:5000 some-image-name
 ```
 When running locally, service can be accessed at http://localhost:5000/emissions

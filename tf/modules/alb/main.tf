@@ -15,7 +15,7 @@ resource "aws_lb" "main" {
 
 resource "aws_alb_target_group" "main" {
   name        = "${var.name}-tg-${var.environment}"
-  port        = 5000
+  port        = 5001
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
