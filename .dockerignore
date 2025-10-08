@@ -1,6 +1,7 @@
 .git
 .gitignore
 .editorconfig
+.cursor
 
 # Compiled files
 **/.terraform/*
@@ -18,3 +19,5 @@ tf/*
 
 **/.build-harness
 **/build-harness
+
+*.csv

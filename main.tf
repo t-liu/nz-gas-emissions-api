@@ -80,10 +80,8 @@ module "ecs" {
   container_memory            = var.container_memory
   service_desired_count       = var.service_desired_count
   container_environment = [
-    { name = "LOG_LEVEL",
-    value = "DEBUG" },
-    { name = "PORT",
-    value = var.container_port }
+    { name = "LOG_LEVEL", value = "DEBUG" },
+    { name = "PORT", value = var.container_port }
   ]
   container_image        = module.ecr.aws_ecr_repository_url
   # container_secrets      = module.ssm.secrets_map

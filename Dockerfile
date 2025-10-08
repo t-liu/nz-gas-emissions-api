@@ -1,33 +1,36 @@
-FROM alpine:latest
+FROM python:3.11-slim
+LABEL maintainer="Thomas <thomas.s.liu@gmail.com>"
 
-MAINTAINER Thomas Liu "thomas.s.liu@gmail.com"
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV GUNICORN_WORKERS=4
+ENV GUNICORN_PORT=5000
+ENV RDS_MYSQL_HOST=$RDS_MYSQL_HOST
+ENV RDS_MYSQL_PORT=$RDS_MYSQL_PORT
+ENV RDS_MYSQL_USER=$RDS_MYSQL_USER
+ENV RDS_MYSQL_PASS=$RDS_MYSQL_PASS
+ENV RDS_MYSQL_DB=$RDS_MYSQL_DB
+ENV REDIS_HOST=$REDIS_HOST
+ENV REDIS_PORT=$REDIS_PORT
+ENV REDIS_DB=$REDIS_DB
+ENV REDIS_PASSWORD=$REDIS_PASSWORD
 
-USER root
-
-RUN apk update && apk add --no-cache git openssh py3-pip python3
-# install -y --no-install-recommends
-
-RUN pip install --upgrade pip
-
-# add credentials on build
-# run the following to build locally:
-# docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" -t nora-media-service .
-ARG SSH_PRIVATE_KEY
-RUN mkdir /root/.ssh/ && \
-    echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa && \
-    chmod 600 /root/.ssh/id_rsa && \
-    touch /root/.ssh/known_hosts && \
-    ssh-keyscan github.com >> /root/.ssh/known_hosts
-
-# copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /app/requirements.txt
-
+# Create non-root user
+RUN useradd -m appuser
 WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
 
-RUN pip install -r requirements.txt
+# Set permissions
+RUN chown -R appuser:appuser /app && chmod -R 755 /app
 
-COPY . /app
+# Switch to non-root user
+USER appuser
 
-ENTRYPOINT [ "python3" ]
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:${GUNICORN_PORT}/health || exit 1
 
-CMD [ "api.py" ]
+# Run with gunicorn
+CMD ["sh", "-c", "gunicorn -w ${GUNICORN_WORKERS} -b 0.0.0.0:${GUNICORN_PORT} emissions_api:create_app"]

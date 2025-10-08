@@ -12,14 +12,6 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "aws-access-key" {
-  type = string
-}
-
-variable "aws-secret-key" {
-  type = string
-}
-
 variable "application-secrets" {
   description = "A map of secrets that is passed into the application. Formatted like ENV_VAR = VALUE"
   type        = map
@@ -44,7 +36,7 @@ variable "public_subnets" {
 
 variable "availability_zones" {
   description = "a comma-separated list of availability zones, defaults to all AZ of the region, if set to something other than the defaults, both private_subnets and public_subnets have to be defined as well"
-  default     = ["us-east-1a", "us-east-1b", "us-east-1d", "us-east-1d", "us-east-1e", "us-east-1f"]
+  default     = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e", "us-east-1f"]
 }
 
 variable "service_desired_count" {
